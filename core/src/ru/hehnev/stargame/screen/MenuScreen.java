@@ -1,92 +1,62 @@
 package ru.hehnev.stargame.screen;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.hehnev.stargame.base.BaseScreen;
+import ru.hehnev.stargame.math.Rect;
+import ru.hehnev.stargame.sprite.Background;
 
 public class MenuScreen extends BaseScreen {
 
+    private static final float V_LEN = 0.5f;
+
     private Texture img;
-    private Vector2 pos;
-    private Vector2 touch;
-    private Vector2 v;
+    private Texture bg;
+
+    private Background background;
 
     @Override
     public void show() {
         super.show();
         img = new Texture("badlogic.jpg");
-        pos = new Vector2();
-        touch = new Vector2();
-        v = new Vector2();
+        bg = new Texture("textures/bg.png");
+        background = new Background(bg);
+    }
+
+    @Override
+    public void resize(Rect worldBounds) {
+        super.resize(worldBounds);
+        background.resize(worldBounds);
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
-        move();
-        batch.begin();
-        batch.draw(img, pos.x, pos.y);
-        batch.end();
-        pos.add(v);
+        update(delta);
+        draw();
     }
 
     @Override
     public void dispose() {
         super.dispose();
+        img.dispose();
+        bg.dispose();
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        touch.set(screenX, Gdx.graphics.getHeight() - screenY);
-        return super.touchDown(screenX, screenY, pointer, button);
+    public boolean touchDown(Vector2 touch, int pointer, int button) {
+        return super.touchDown(touch, pointer, button);
     }
 
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        touch.set(screenX, Gdx.graphics.getHeight() - screenY);
-        pos.set(touch);
-        return super.touchDragged(screenX, screenY, pointer);
+    private void update(float delta) {
+
     }
 
-    @Override
-    public boolean keyDown(int keycode) {
-        switch (keycode) {
-            case Input.Keys.UP:
-                v.set(0, 5);
-                break;
-            case Input.Keys.DOWN:
-                v.set(0, -5);
-                break;
-            case Input.Keys.LEFT:
-                v.set(-5, 0);
-                break;
-            case Input.Keys.RIGHT:
-                v.set(5, 0);
-                break;
-        }
-        return super.keyDown(keycode);
+    private void draw() {
+        batch.begin();
+        background.draw(batch);
+        batch.draw(img, 0, 0, 0.3f ,0.3f);
+        batch.end();
     }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        v.setZero();
-        return super.keyUp(keycode);
-    }
-
-    public void move() {
-        if (touch.x > pos.x) {
-            pos.x++;
-        } else {
-            pos.x--;
-        }
-        if (touch.y > pos.y) {
-            pos.y++;
-        } else {
-            pos.y--;
-        }
-    }
-
 }
