@@ -26,6 +26,7 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void render(float delta) {
         super.render(delta);
+        move();
         batch.begin();
         batch.draw(img, pos.x, pos.y);
         batch.end();
@@ -40,7 +41,6 @@ public class MenuScreen extends BaseScreen {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         touch.set(screenX, Gdx.graphics.getHeight() - screenY);
-        pos.set(touch);
         return super.touchDown(screenX, screenY, pointer, button);
     }
 
@@ -75,4 +75,18 @@ public class MenuScreen extends BaseScreen {
         v.setZero();
         return super.keyUp(keycode);
     }
+
+    public void move() {
+        if (touch.x > pos.x) {
+            pos.x++;
+        } else {
+            pos.x--;
+        }
+        if (touch.y > pos.y) {
+            pos.y++;
+        } else {
+            pos.y--;
+        }
+    }
+
 }
