@@ -50,7 +50,7 @@ public class MenuScreen extends BaseScreen {
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
         logo.touchDown(touch, pointer, button);
-        return super.touchDown(touch, pointer, button);
+        return false;
     }
 
     private void update(float delta) {

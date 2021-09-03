@@ -12,14 +12,12 @@ public class Logo extends Sprite {
     private static final float V_LEN = 0.01f;
 
     private Vector2 v;
-    private Vector2 tmp;
     private Vector2 touch;
 
 
     public Logo(Texture texture) {
         super(new TextureRegion(texture));
         v = new Vector2();
-        tmp = new Vector2();
         touch = new Vector2();
     }
 
@@ -31,20 +29,16 @@ public class Logo extends Sprite {
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
         this.touch.set(touch);
-        System.out.println("touch = " + touch);
-        v.set(touch.cpy().sub(this.pos)).setLength(V_LEN);
-        System.out.println("v = " + v);
-        System.out.println("pos = " + this.pos);
+        v.set(touch.cpy().sub(pos)).setLength(V_LEN);
         return false;
     }
 
     @Override
     public void update(float delta) {
-        tmp.set(touch);
-        if (tmp.sub(this.pos).len() > V_LEN) {
-            this.pos.add(v);
+        if (touch.dst(pos) > V_LEN) {
+            pos.add(v);
         } else {
-            this.pos.set(touch);
+            pos.set(touch);
         }
     }
 }
