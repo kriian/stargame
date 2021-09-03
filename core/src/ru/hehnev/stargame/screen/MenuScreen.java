@@ -6,28 +6,31 @@ import com.badlogic.gdx.math.Vector2;
 import ru.hehnev.stargame.base.BaseScreen;
 import ru.hehnev.stargame.math.Rect;
 import ru.hehnev.stargame.sprite.Background;
+import ru.hehnev.stargame.sprite.Logo;
 
 public class MenuScreen extends BaseScreen {
 
-    private static final float V_LEN = 0.5f;
-
-    private Texture img;
+    private Texture plane;
     private Texture bg;
 
     private Background background;
+    private Logo logo;
 
     @Override
     public void show() {
         super.show();
-        img = new Texture("badlogic.jpg");
+        plane = new Texture("textures/plane.png");
         bg = new Texture("textures/bg.png");
+
         background = new Background(bg);
+        logo = new Logo(plane);
     }
 
     @Override
     public void resize(Rect worldBounds) {
         super.resize(worldBounds);
         background.resize(worldBounds);
+        logo.resize(worldBounds);
     }
 
     @Override
@@ -40,23 +43,24 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void dispose() {
         super.dispose();
-        img.dispose();
+        plane.dispose();
         bg.dispose();
     }
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
-        return super.touchDown(touch, pointer, button);
+        logo.touchDown(touch, pointer, button);
+        return false;
     }
 
     private void update(float delta) {
-
+        logo.update(delta);
     }
 
     private void draw() {
         batch.begin();
         background.draw(batch);
-        batch.draw(img, 0, 0, 0.3f ,0.3f);
+        logo.draw(batch);
         batch.end();
     }
 }
