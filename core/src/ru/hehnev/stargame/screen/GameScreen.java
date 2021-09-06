@@ -61,7 +61,8 @@ public class GameScreen extends BaseScreen {
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
-        return super.touchDown(touch, pointer, button);
+        gamingShip.touchDown(touch, pointer, button);
+        return false;
     }
 
     @Override
