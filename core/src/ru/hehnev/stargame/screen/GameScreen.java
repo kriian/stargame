@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import ru.hehnev.stargame.base.BaseScreen;
 import ru.hehnev.stargame.math.Rect;
 import ru.hehnev.stargame.sprite.Background;
+import ru.hehnev.stargame.sprite.GamingShip;
 import ru.hehnev.stargame.sprite.Star;
 
 public class GameScreen extends BaseScreen {
@@ -18,6 +19,7 @@ public class GameScreen extends BaseScreen {
 
     private Background background;
     private Star[] stars;
+    private GamingShip gamingShip;
 
     @Override
     public void show() {
@@ -30,6 +32,7 @@ public class GameScreen extends BaseScreen {
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(atlas);
         }
+        gamingShip = new GamingShip(atlas);
     }
 
     @Override
@@ -39,6 +42,7 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.resize(worldBounds);
         }
+        gamingShip.resize(worldBounds);
     }
 
     @Override
@@ -69,6 +73,7 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.update(delta);
         }
+        gamingShip.update(delta);
     }
 
     private void draw() {
@@ -77,6 +82,7 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.draw(batch);
         }
+        gamingShip.draw(batch);
         batch.end();
     }
 }
