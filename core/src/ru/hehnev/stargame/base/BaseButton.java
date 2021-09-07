@@ -3,7 +3,7 @@ package ru.hehnev.stargame.base;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public abstract class BaseButton extends Sprite {
+public abstract class BaseButton extends BaseSprite {
 
     public static final float PRESS_SCALE = 0.9f;
 
