@@ -1,6 +1,8 @@
 package ru.hehnev.stargame.sprite;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -14,6 +16,9 @@ public class GamingShip extends BaseSprite {
     private static final float HEIGHT = 0.15f;
     private static final float BOTTOM_MARGIN = 0.05f;
     public static final int INVALID_POINTER = -1;
+    private static final int SHOT_DELAY = 15;
+
+    private byte counter;
 
     private final Vector2 v0 = new Vector2(0.5f, 0);
     private final Vector2 v = new Vector2();
@@ -33,6 +38,8 @@ public class GamingShip extends BaseSprite {
 
     private Rect worldBounds;
 
+    private final Sound sound;
+
 
     public GamingShip(TextureAtlas atlas, BulletPool bulletPool) {
         super(atlas.findRegion("main_ship"), 1, 2, 2);
@@ -42,6 +49,7 @@ public class GamingShip extends BaseSprite {
         bulletPos = new Vector2();
         bulletHeight = 0.01f;
         bulletDamage = 1;
+        sound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
     }
 
     @Override
@@ -63,6 +71,13 @@ public class GamingShip extends BaseSprite {
             setLeft(worldBounds.getLeft());
             stop();
         }
+
+        // automatic shooting
+        if (counter == SHOT_DELAY) {
+            shoot();
+            counter = 0;
+        }
+        counter++;
     }
 
     @Override
@@ -112,7 +127,6 @@ public class GamingShip extends BaseSprite {
                 moveRight();
                 break;
             case Input.Keys.UP:
-                shoot();
                 break;
         }
         return false;
@@ -158,5 +172,10 @@ public class GamingShip extends BaseSprite {
         Bullet bullet = bulletPool.obtain();
         bulletPos.set(pos.x, pos.y + getHalfHeight());
         bullet.set(this, bulletRegion, bulletPos, bulletV, bulletHeight, worldBounds, bulletDamage);
+        sound.play(0.3f);
+    }
+
+    public void dispose() {
+        sound.dispose();
     }
 }

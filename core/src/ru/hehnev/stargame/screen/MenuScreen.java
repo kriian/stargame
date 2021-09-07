@@ -28,6 +28,7 @@ public class MenuScreen extends BaseScreen {
     private ExitButton exitButton;
     private PlayButton playButton;
 
+
     public MenuScreen(Game game) {
         this.game = game;
     }
