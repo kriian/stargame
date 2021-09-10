@@ -1,5 +1,7 @@
 package ru.hehnev.stargame.screen;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
@@ -7,9 +9,11 @@ import com.badlogic.gdx.math.Vector2;
 import ru.hehnev.stargame.base.BaseScreen;
 import ru.hehnev.stargame.math.Rect;
 import ru.hehnev.stargame.pool.BulletPool;
+import ru.hehnev.stargame.pool.EnemyPool;
 import ru.hehnev.stargame.sprite.Background;
 import ru.hehnev.stargame.sprite.GamingShip;
 import ru.hehnev.stargame.sprite.Star;
+import ru.hehnev.stargame.utils.EnemyEmitter;
 
 public class GameScreen extends BaseScreen {
 
@@ -23,6 +27,10 @@ public class GameScreen extends BaseScreen {
     private GamingShip gamingShip;
 
     private BulletPool bulletPool;
+    private EnemyPool enemyPool;
+
+    private EnemyEmitter enemyEmitter;
+    private Sound bulletSound;
 
     @Override
     public void show() {
@@ -30,13 +38,18 @@ public class GameScreen extends BaseScreen {
         bg = new Texture("textures/space.png");
         atlas = new TextureAtlas("textures/mainAtlas.tpack");
 
+        bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
+
         background = new Background(bg);
         stars = new Star[STAR_COUNT];
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(atlas);
         }
         bulletPool = new BulletPool();
+        enemyPool = new EnemyPool(bulletPool, worldBounds);
         gamingShip = new GamingShip(atlas, bulletPool);
+
+        enemyEmitter = new EnemyEmitter(atlas, enemyPool, worldBounds, bulletSound);
     }
 
     @Override
@@ -63,6 +76,8 @@ public class GameScreen extends BaseScreen {
         bg.dispose();
         atlas.dispose();
         bulletPool.dispose();
+        enemyPool.dispose();
+        bulletSound.dispose();
         gamingShip.dispose();
     }
 
@@ -96,10 +111,13 @@ public class GameScreen extends BaseScreen {
         }
         gamingShip.update(delta);
         bulletPool.updateActiveSprites(delta);
+        enemyPool.updateActiveSprites(delta);
+        enemyEmitter.generate(delta);
     }
 
     private void freeAllDestroyed() {
         bulletPool.freeAllDestroyedActiveSprites();
+        enemyPool.freeAllDestroyedActiveSprites();
     }
 
     private void draw() {
@@ -110,6 +128,7 @@ public class GameScreen extends BaseScreen {
         }
         gamingShip.draw(batch);
         bulletPool.drawActiveSprites(batch);
+        enemyPool.drawActiveSprites(batch);
         batch.end();
     }
 }

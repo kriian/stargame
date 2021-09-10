@@ -8,27 +8,17 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.hehnev.stargame.base.BaseSprite;
+import ru.hehnev.stargame.base.Ship;
 import ru.hehnev.stargame.math.Rect;
 import ru.hehnev.stargame.pool.BulletPool;
 
-public class GamingShip extends BaseSprite {
+public class GamingShip extends Ship {
 
     private static final float HEIGHT = 0.15f;
     private static final float BOTTOM_MARGIN = 0.05f;
-    public static final int INVALID_POINTER = -1;
-    private static final int SHOT_DELAY = 15;
-
-    private byte counter;
-
-    private final Vector2 v0 = new Vector2(0.5f, 0);
-    private final Vector2 v = new Vector2();
-
-    private final BulletPool bulletPool;
-    private final TextureRegion bulletRegion;
-    private final Vector2 bulletV;
-    private final Vector2 bulletPos;
-    private final float bulletHeight;
-    private final int bulletDamage;
+    private static final int INVALID_POINTER = -1;
+    private static final int HP = 100;
+    private static final float RELOAD_INTERVAL = 0.2f;
 
     private boolean pressedLeft;
     private boolean pressedRight;
@@ -36,20 +26,20 @@ public class GamingShip extends BaseSprite {
     private int leftPointer = INVALID_POINTER;
     private int rightPointer = INVALID_POINTER;
 
-    private Rect worldBounds;
-
-    private final Sound sound;
-
 
     public GamingShip(TextureAtlas atlas, BulletPool bulletPool) {
         super(atlas.findRegion("main_ship"), 1, 2, 2);
         this.bulletPool = bulletPool;
+        bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
+        this.bulletPool = bulletPool;
         bulletRegion = atlas.findRegion("bulletMainShip");
-        bulletV = new Vector2(0, 0.7f);
+        bulletV = new Vector2(0, 0.5f);
         bulletPos = new Vector2();
         bulletHeight = 0.01f;
         bulletDamage = 1;
-        sound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
+        v0.set(0.5f, 0);
+        hp = HP;
+        reloadInterval = RELOAD_INTERVAL;
     }
 
     @Override
@@ -61,8 +51,8 @@ public class GamingShip extends BaseSprite {
 
     @Override
     public void update(float delta) {
-        pos.mulAdd(v, delta);
-
+        super.update(delta);
+        bulletPos.set(pos.x, pos.y + getHalfHeight());
         if (getRight() > worldBounds.getRight()) {
             setRight(worldBounds.getRight());
             stop();
@@ -71,13 +61,6 @@ public class GamingShip extends BaseSprite {
             setLeft(worldBounds.getLeft());
             stop();
         }
-
-        // automatic shooting
-        if (counter == SHOT_DELAY) {
-            shoot();
-            counter = 0;
-        }
-        counter++;
     }
 
     @Override
@@ -168,14 +151,7 @@ public class GamingShip extends BaseSprite {
         v.setZero();
     }
 
-    private void shoot() {
-        Bullet bullet = bulletPool.obtain();
-        bulletPos.set(pos.x, pos.y + getHalfHeight());
-        bullet.set(this, bulletRegion, bulletPos, bulletV, bulletHeight, worldBounds, bulletDamage);
-        sound.play(0.3f);
-    }
-
     public void dispose() {
-        sound.dispose();
+        bulletSound.dispose();
     }
 }
