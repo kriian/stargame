@@ -3,6 +3,7 @@ package ru.hehnev.stargame.base;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
@@ -25,6 +26,8 @@ public class BaseScreen implements Screen, InputProcessor {
 
     protected SpriteBatch batch;
 
+    private Music music;
+
     @Override
     public void show() {
         System.out.println("show");
@@ -39,6 +42,9 @@ public class BaseScreen implements Screen, InputProcessor {
 
         batch = new SpriteBatch();
         Gdx.input.setInputProcessor(this);
+        music = Gdx.audio.newMusic(Gdx.files.internal("sounds/PPC.mp3"));
+        music.setLooping(true);
+        music.play();
     }
 
     @Override
@@ -86,6 +92,7 @@ public class BaseScreen implements Screen, InputProcessor {
     public void dispose() {
         System.out.println("dispose");
         batch.dispose();
+        music.dispose();
     }
 
     @Override
