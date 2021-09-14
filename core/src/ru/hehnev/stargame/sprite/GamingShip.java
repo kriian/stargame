@@ -11,13 +11,14 @@ import ru.hehnev.stargame.base.BaseSprite;
 import ru.hehnev.stargame.base.Ship;
 import ru.hehnev.stargame.math.Rect;
 import ru.hehnev.stargame.pool.BulletPool;
+import ru.hehnev.stargame.pool.ExplosionPool;
 
 public class GamingShip extends Ship {
 
     private static final float HEIGHT = 0.15f;
     private static final float BOTTOM_MARGIN = 0.05f;
     private static final int INVALID_POINTER = -1;
-    private static final int HP = 100;
+    private static final int HP = 10;
     private static final float RELOAD_INTERVAL = 0.2f;
 
     private boolean pressedLeft;
@@ -27,11 +28,11 @@ public class GamingShip extends Ship {
     private int rightPointer = INVALID_POINTER;
 
 
-    public GamingShip(TextureAtlas atlas, BulletPool bulletPool) {
+    public GamingShip(TextureAtlas atlas, BulletPool bulletPool, ExplosionPool explosionPool) {
         super(atlas.findRegion("main_ship"), 1, 2, 2);
         this.bulletPool = bulletPool;
+        this.explosionPool = explosionPool;
         bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
-        this.bulletPool = bulletPool;
         bulletRegion = atlas.findRegion("bulletMainShip");
         bulletV = new Vector2(0, 0.5f);
         bulletPos = new Vector2();
@@ -137,6 +138,13 @@ public class GamingShip extends Ship {
                 break;
         }
         return false;
+    }
+
+    public boolean isCollision(Rect rect) {
+        return !(rect.getRight() < getLeft()
+                || rect.getLeft() > getRight()
+                || rect.getBottom() > pos.y
+                || rect.getTop() < getBottom());
     }
 
     private void moveRight() {
